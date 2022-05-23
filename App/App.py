@@ -3,7 +3,8 @@ import tkinter as tk
 from DatasetHandler.dataset import Dataset
 from IncrementalModel.model import Model
 from tkinter import filedialog as fd
-from PIL import Image,ImageTk
+from PIL import Image, ImageTk
+
 
 class MainForm(tk.Tk):
     def __init__(self):
@@ -37,9 +38,15 @@ class MainForm(tk.Tk):
     def train_data(self):
         model = Model()
         dataset = Dataset()
+        items_per_task = 1000
 
-        model.train(dataset.x_train, dataset.y_train,
-                    dataset.x_test, dataset.y_test)
+        for i in range(0, len(dataset.x_train), items_per_task):
+            task_nr = i / items_per_task + 1
+            print(f"Task {task_nr}")
+            task_items = dataset.get_data(items_per_task, i)
+            model.train(task_items[0], task_items[1],
+                        dataset.x_test, dataset.y_test)
+
         model.save_model(1)
 
     def test_data(self):

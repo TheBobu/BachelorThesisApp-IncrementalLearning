@@ -4,7 +4,6 @@ import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.preprocessing import image
-from tensorflow.keras.applications.resnet50 import preprocess_input, decode_predictions
 
 class Model():
     def __init__(self):
@@ -19,7 +18,8 @@ class Model():
             y_train,
             epochs=10,
             validation_data=(x_test, y_test),
-            callbacks=[tensorboard_callback])
+            callbacks=[tensorboard_callback],
+            shuffle=True)
 
     def define_model(self):
         self.model = keras.Sequential([
