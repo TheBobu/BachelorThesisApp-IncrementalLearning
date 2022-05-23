@@ -66,11 +66,13 @@ class MainForm(tk.Tk):
         figure_accuracy = Figure(figsize=(4, 4), dpi=100)
         accuracy = figure_accuracy.add_subplot()
         accuracy.set_title("Accuracy", loc='left')
-        line1, = accuracy.plot(model.custom_stats_callback.model_train_accuracy, linewidth=0.75)
-        line2, = accuracy.plot(model.custom_stats_callback.model_value_accuracy, linewidth=0.75)
+        line1, = accuracy.plot(
+            model.custom_stats_callback.model_train_accuracy, linewidth=0.75)
+        line2, = accuracy.plot(
+            model.custom_stats_callback.model_value_accuracy, linewidth=0.75)
         figure_accuracy.legend(
             (line1, line2), ('Train Accuracy', 'Value Accuracy'), 'upper right')
-        
+
         figure_accuracy_canvas = FigureCanvasTkAgg(
             figure_accuracy, accuracy_containter)
         NavigationToolbar2Tk(figure_accuracy_canvas, accuracy_containter)
@@ -86,11 +88,13 @@ class MainForm(tk.Tk):
         figure_loss = Figure(figsize=(4, 4), dpi=100)
         loss = figure_loss.add_subplot()
         loss.set_title("Loss", loc='left')
-        loss_line1, = loss.plot(model.custom_stats_callback.model_train_loss, linewidth=0.75)
-        loss_line2, = loss.plot(model.custom_stats_callback.model_value_loss, linewidth=0.75)
+        loss_line1, = loss.plot(
+            model.custom_stats_callback.model_train_loss, linewidth=0.75)
+        loss_line2, = loss.plot(
+            model.custom_stats_callback.model_value_loss, linewidth=0.75)
         figure_loss.legend(
             (loss_line1, loss_line2), ('Train Loss', 'Value Loss'), 'upper right')
-        
+
         figure_loss_canvas = FigureCanvasTkAgg(figure_loss, loss_containter)
         NavigationToolbar2Tk(figure_loss_canvas, loss_containter)
         figure_loss_canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)

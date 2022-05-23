@@ -6,4 +6,3 @@ from IncrementalModel.model import Model
 
 form = MainForm()
 form.start()
-    

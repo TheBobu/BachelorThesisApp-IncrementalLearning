@@ -7,6 +7,7 @@ from tensorflow.keras.preprocessing import image
 
 from IncrementalModel.traincallback import StatsCallback
 
+
 class Model():
     def __init__(self):
         Model.define_model(self)
@@ -16,7 +17,7 @@ class Model():
         log_dir = "./logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
         tensorboard_callback = keras.callbacks.TensorBoard(
             log_dir=log_dir, histogram_freq=1)
-        
+
         self.model.fit(
             x_train,
             y_train,
@@ -50,10 +51,11 @@ class Model():
 
     def save_model(self, attempt_nr):
         self.model.save(f"./saved_models/{attempt_nr}")
-        
+
     def predict(self, img_path):
-        img = image.load_img(img_path, color_mode="grayscale", target_size=(28, 28))
-        img_batch = (np.expand_dims(img,0))
+        img = image.load_img(
+            img_path, color_mode="grayscale", target_size=(28, 28))
+        img_batch = (np.expand_dims(img, 0))
         prediction = self.model.predict(img_batch)
         print(prediction)
         digit = np.argmax(prediction[0])
