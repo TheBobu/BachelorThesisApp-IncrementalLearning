@@ -5,20 +5,24 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.preprocessing import image
 
+from IncrementalModel.traincallback import StatsCallback
+
 class Model():
     def __init__(self):
         Model.define_model(self)
+        self.custom_stats_callback = StatsCallback()
 
     def train(self, x_train, y_train, x_test, y_test):
         log_dir = "./logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
         tensorboard_callback = keras.callbacks.TensorBoard(
             log_dir=log_dir, histogram_freq=1)
+        
         self.model.fit(
             x_train,
             y_train,
             epochs=10,
             validation_data=(x_test, y_test),
-            callbacks=[tensorboard_callback],
+            callbacks=[tensorboard_callback, self.custom_stats_callback],
             shuffle=True)
 
     def define_model(self):
