@@ -60,3 +60,4 @@ class Model():
         print(prediction)
         digit = np.argmax(prediction[0])
         print(digit)
+        return digit

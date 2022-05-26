@@ -4,7 +4,7 @@ import tkinter as tk
 import matplotlib
 from DatasetHandler.dataset import Dataset
 from IncrementalModel.model import Model
-from tkinter import filedialog as fd
+from tkinter import Label, filedialog as fd
 from PIL import Image, ImageTk
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (
@@ -111,4 +111,9 @@ class MainForm(tk.Tk):
         self.canvas.pack()
         self.canvas.delete("all")
         self.canvas.create_image((0, 0), anchor=tk.NW, image=self.img)
-        model.predict(filename)
+        prediction = model.predict(filename)
+        
+        label = Label(master=self.container,
+                      text=f"Prediction: {prediction}")
+        label.place(x=400,
+                    y=320)
