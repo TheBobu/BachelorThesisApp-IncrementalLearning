@@ -61,3 +61,16 @@ class Model():
         digit = np.argmax(prediction[0])
         print(digit)
         return digit
+
+    def evaluate_generated_dataset(self):
+        x_generated = []
+        y_generated = []
+        for i in range(0, 100):
+            img = image.load_img(
+                f'random_dataset/{i}.png', color_mode="grayscale", target_size=(28, 28))
+            img_batch = (np.expand_dims(img, [0,3]))
+            x_generated.append(img_batch[0])
+            prediction = self.model.predict(img_batch)
+            y_generated.append(prediction.flatten())
+        return (x_generated, y_generated)
+            

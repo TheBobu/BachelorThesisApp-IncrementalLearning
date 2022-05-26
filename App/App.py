@@ -2,6 +2,7 @@ from threading import Thread
 import tkinter as tk
 
 import matplotlib
+from numpy import shape
 from DatasetHandler.dataset import Dataset
 from IncrementalModel.model import Model
 from tkinter import Label, filedialog as fd
@@ -11,6 +12,7 @@ from matplotlib.backends.backend_tkagg import (
     FigureCanvasTkAgg,
     NavigationToolbar2Tk
 )
+import numpy as np
 
 
 class MainForm(tk.Tk):
@@ -46,13 +48,19 @@ class MainForm(tk.Tk):
         model = Model()
         dataset = Dataset()
         items_per_task = 1000
-
+        max_task = len(dataset.x_train)/items_per_task
         for i in range(0, len(dataset.x_train), items_per_task):
             task_nr = i / items_per_task + 1
-            print(f"Task {task_nr}")
-            task_items = dataset.get_data(items_per_task, i)
-            model.train(task_items[0], task_items[1],
+            print(f"Task {task_nr}/{max_task}")
+            (x_task, y_task) = dataset.get_data(items_per_task, i)
+            if i != 0:
+                (x_generated, y_generated) = model.evaluate_generated_dataset()
+                x_task = np.concatenate((x_task, x_generated))
+                y_task = np.concatenate((y_task, y_generated))
+            print(f"{shape(x_task)} {shape(y_task)}")
+            model.train(x_task, y_task,
                         dataset.x_test, dataset.y_test)
+            dataset.geneate_random_images()
 
         matplotlib.use('TkAgg')
 
@@ -98,11 +106,11 @@ class MainForm(tk.Tk):
         figure_loss_canvas = FigureCanvasTkAgg(figure_loss, loss_containter)
         NavigationToolbar2Tk(figure_loss_canvas, loss_containter)
         figure_loss_canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-        model.save_model(1)
+        model.save_model(2)
 
     def test_data(self):
         model = Model()
-        model.load_model(1)
+        model.load_model(2)
         filename = fd.askopenfilename()
         image = Image.open(filename)
         image = image.resize((300, 300), Image.ANTIALIAS)
@@ -112,7 +120,7 @@ class MainForm(tk.Tk):
         self.canvas.delete("all")
         self.canvas.create_image((0, 0), anchor=tk.NW, image=self.img)
         prediction = model.predict(filename)
-        
+
         label = Label(master=self.container,
                       text=f"Prediction: {prediction}")
         label.place(x=400,

@@ -1,8 +1,12 @@
+import cv2
+from matplotlib import pyplot as plt
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.utils import to_categorical
 import numpy as np
-
+import os
+import os.path
+from os import path
 
 class Dataset():
     input_train_shape = (60000, 28, 28, 1)
@@ -24,3 +28,15 @@ class Dataset():
 
     def get_data(self, number_of_items, offset):
         return (self.x_train[offset:(offset+number_of_items)], self.y_train[offset:(offset+number_of_items)])
+    
+    def geneate_random_images(self):
+        if path.exists('random_dataset') != True:
+            os.mkdir('random_dataset')
+        for i in range(0,100):
+            Z = np.random.random((28,28))   # Test data
+            norm = plt.Normalize(vmin=Z.min(), vmax=Z.max())
+            cmap = plt.cm.get_cmap(name='gray')
+            image = cmap(norm(Z))
+            if os.path.exists(f'random_dataset/{i}.png'):
+                os.remove(f'random_dataset/{i}.png')
+            plt.imsave(f'random_dataset/{i}.png', image)
