@@ -62,10 +62,10 @@ class Model():
         print(digit)
         return digit
 
-    def evaluate_generated_dataset(self):
+    def evaluate_generated_dataset(self, max_nr_of_images):
         x_generated = []
         y_generated = []
-        for i in range(0, 100):
+        for i in range(0, max_nr_of_images):
             img = image.load_img(
                 f'random_dataset/{i}.png', color_mode="grayscale", target_size=(28, 28))
             img_batch = (np.expand_dims(img, [0,3]))

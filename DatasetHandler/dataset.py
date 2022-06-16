@@ -15,10 +15,12 @@ class Dataset():
     output_test_shape = (10000,)
 
     def __init__(self):
-        Dataset.load_data(self)
+        self.load_data()
+        self.max_number_of_rand_images = 100
 
     def load_data(self):
         (x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
+        print(type(x_train),type(y_train))
         self.x_train = x_train.reshape(Dataset.input_train_shape)
         self.y_train = to_categorical(
             y_train.reshape(Dataset.output_train_shape))
@@ -32,7 +34,7 @@ class Dataset():
     def geneate_random_images(self):
         if path.exists('random_dataset') != True:
             os.mkdir('random_dataset')
-        for i in range(0,100):
+        for i in range(0, self.max_number_of_rand_images):
             Z = np.random.random((28,28))   # Test data
             norm = plt.Normalize(vmin=Z.min(), vmax=Z.max())
             cmap = plt.cm.get_cmap(name='gray')
@@ -40,3 +42,11 @@ class Dataset():
             if os.path.exists(f'random_dataset/{i}.png'):
                 os.remove(f'random_dataset/{i}.png')
             plt.imsave(f'random_dataset/{i}.png', image)
+
+
+# if __name__ == "__main__":
+#     set = Dataset()
+#     a="aaa"
+#     print(type(a))
+#     a=([],[])
+#     print(type(set.get_data(10,20)))
