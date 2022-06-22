@@ -54,21 +54,42 @@ class MainForm(tk.Tk):
         self.dataset = Dataset()
 
     def train_data(self):
+        #items_per_task = [5000,5000,100,100,100,100,100,100,100,100] uncomment lines for separate tasks
+        #nr_examples = len(self.dataset.x_train)
         items_per_task = 1000
-        max_task = len(self.dataset.x_train)/items_per_task
-        for i in range(0, len(self.dataset.x_train), items_per_task):
-            task_nr = i / items_per_task + 1
-            print(f"Task {task_nr}/{max_task}")
-            (x_task, y_task) = self.dataset.get_data(items_per_task, i)
+        max_task = 10
+        
+        ratio = 0.1
+        
+        #label = 0
+        for i in range(0, max_task):
+            #task_nr = i / items_per_task + 1
+            print(f"Task {i+1}/{max_task}")
+            # x_task:list
+            # y_task:list
+            
+            # if i>4:
+            #     (x_task, y_task) = self.dataset.get_data_by_label(items_per_task[i-5], 0, label)
+            #     label+=1
+            # else:
+            #     (x_task, y_task) = self.dataset.get_data(1000,i*1000)
+            (x_task, y_task) = self.dataset.get_data(items_per_task,i*items_per_task)
             if i != 0:
+                # if i>4:
+                #     self.dataset.max_number_of_rand_images = items_per_task[i-5]*10;
+                # else:
+                #     self.dataset.max_number_of_rand_images = 1000;
+                self.dataset.max_number_of_rand_images = int(items_per_task*ratio);
                 self.dataset.geneate_random_images()
                 (x_generated, y_generated) = self.model.evaluate_generated_dataset(
                     self.dataset.max_number_of_rand_images)
                 x_task = np.concatenate((x_task, x_generated))
                 y_task = np.concatenate((y_task, y_generated))
-            print(f"{shape(x_task)} {shape(y_task)}")
+            
             self.model.train(x_task, y_task,
                              self.dataset.x_test, self.dataset.y_test)
+
+
 
         matplotlib.use('TkAgg')
 
@@ -114,10 +135,10 @@ class MainForm(tk.Tk):
         figure_loss_canvas = FigureCanvasTkAgg(figure_loss, loss_containter)
         NavigationToolbar2Tk(figure_loss_canvas, loss_containter)
         figure_loss_canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-        self.model.save_model(3)
+        self.model.save_model(4)
 
     def test_data(self):
-        self.model.load_model(2)
+        self.model.load_model(4)
         filename = fd.askopenfilename()
         image = Image.open(filename)
         image = image.resize((300, 300), Image.ANTIALIAS)

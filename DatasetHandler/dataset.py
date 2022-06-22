@@ -16,11 +16,10 @@ class Dataset():
 
     def __init__(self):
         self.load_data()
-        self.max_number_of_rand_images = 100
+        self.max_number_of_rand_images = 1000
 
     def load_data(self):
         (x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
-        print(type(x_train),type(y_train))
         self.x_train = x_train.reshape(Dataset.input_train_shape)
         self.y_train = to_categorical(
             y_train.reshape(Dataset.output_train_shape))
@@ -43,10 +42,33 @@ class Dataset():
                 os.remove(f'random_dataset/{i}.png')
             plt.imsave(f'random_dataset/{i}.png', image)
 
+    def get_data_by_label(self, number_of_items, offset, label):
+        nr_of_examples = 0
+        index = 0
+        (x,y)=([],[])
+        while nr_of_examples<number_of_items:
+            elem_label = self.y_train[offset+index]
+            
+            if elem_label[label] == 1:
+                x.append(self.x_train[offset+index])
+                y.append(self.y_train[offset+index])
+                nr_of_examples+=1
+            index=index+1
+        return (np.array(x),np.array(y))
+            
+if __name__ == "__main__":
+    set = Dataset()
 
-# if __name__ == "__main__":
-#     set = Dataset()
-#     a="aaa"
-#     print(type(a))
-#     a=([],[])
-#     print(type(set.get_data(10,20)))
+    (images,labels) =set.get_data_by_label(10,20,2)
+    
+    num=10
+    num_row = 2
+    num_col = 5
+    # plot images
+    fig, axes = plt.subplots(num_row, num_col, figsize=(1.5*num_col,2*num_row))
+    for i in range(num):
+        ax = axes[i//num_col, i%num_col]
+        ax.imshow(images[i], cmap='gray')
+        ax.set_title('Label: {}'.format(labels[i]))
+    plt.tight_layout()
+    plt.show()
