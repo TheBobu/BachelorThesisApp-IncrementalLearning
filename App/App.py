@@ -31,7 +31,7 @@ class MainForm(tk.Tk):
         self.container.grid_rowconfigure(0, weight=1)
 
         helv16 = tkFont.Font(family='Helvetica', size=16, weight=tkFont.BOLD)
-        
+
         buttonTrain = tk.Button(self.container, text="Train",
                                 background="#ffffff", command=self.train_data, font=helv16)
         buttonTrain.pack(ipadx=30, ipady=30)
@@ -61,13 +61,14 @@ class MainForm(tk.Tk):
             print(f"Task {task_nr}/{max_task}")
             (x_task, y_task) = self.dataset.get_data(items_per_task, i)
             if i != 0:
-                (x_generated, y_generated) = self.model.evaluate_generated_dataset(self.dataset.max_number_of_rand_images)
+                self.dataset.geneate_random_images()
+                (x_generated, y_generated) = self.model.evaluate_generated_dataset(
+                    self.dataset.max_number_of_rand_images)
                 x_task = np.concatenate((x_task, x_generated))
                 y_task = np.concatenate((y_task, y_generated))
             print(f"{shape(x_task)} {shape(y_task)}")
             self.model.train(x_task, y_task,
                              self.dataset.x_test, self.dataset.y_test)
-            self.dataset.geneate_random_images()
 
         matplotlib.use('TkAgg')
 
